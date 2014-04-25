@@ -21,6 +21,7 @@
 *.app
 
 # LaTeX
+*.pdf
 *.aux
 *.glo
 *.idx
