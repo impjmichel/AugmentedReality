@@ -3,84 +3,58 @@
 
 
 % A section called 'Basics' is created
-\section{Basics} \label{sec:basics}
+\section{Rollen} \label{sec:basics}
 
-Text is formatted with: \textbf{bold}, \textit{italic} and \underline{underline}.
-\Cref{sec:basics} is part of \cref{cha:your-first-document}.
-
+\textbf{Projectleiders en projectplanners(Council)}\\
+\textbf{naam:}	Raymond Rohder\\
+\textbf{email:}	rchrohde@student.avans.nl\\
+\\
+\textbf{naam:}	Robbert van Nijnatten\\
+\textbf{email:}	rvnijnatten@casema.nl\\
+\\
+De taak van de projectleider is het bewaren van overzicht in het team. Hij is het aanspreekpunt voor alles aangaande het product, en verdeelt de taken binnen het team. De projectleider maakt gebruik van verslagen van de andere projectleden om zijn of haar werk goed te doen. De projectleider rapporteert rechtstreeks aan de senior met de producten en bevindingen van het team.\\
+\\
+\textbf{Projectsecretaris}\\
+\textbf{naam:}	Vincent Stout\\
+\textbf{email:}	--\\
+\\
+De secretaris is de rechterhand van de projectleider. Hij zorgt ervoor dat het document op tijd wordt verwerkt en stuurt deze na goedkeuring van de projectleider op. De secretaris zorgt er ook voor dat de logboeken individueel worden bijgehouden en waarschuwt als er documenten ontbreken. De secretaris is ook verantwoordelijk voor de indeling van de mappenstructuur.
+De Secretaris schrijft ook de notulen tijdens de vergaderingen.\\
+\\
+\textbf{Projectversiebeheerder}\\
+\textbf{naam:}	Johannes Michel\\
+\textbf{email:}	johannes.san@gmail.com\\
+\\
+De versiebeheerder zorgt ervoor dat alle code en document opgeslagen worden met behulp van versiebeheer website zoals github.com. Hier maakt hij een repository aan die weer verdeeld wordt in branches. Elke week merged hij alle branches naar de masterbranch.\\
+\\
+\textbf{Projecttester}\\
+\textbf{naam:}	Kevin van der Vleuten\\
+\textbf{email:}	kevin.vd.vleuten@gmail.com\\
+\\
+De projecttester test de gemaakte applicatie één keer per week. Tevens houd hij alle bugs bij in een bugtracker zoals Mantis. Pas na goedkeuring van de projecttester mag de versiebeheerder de code mergen.\\
+\\
+\textbf{Projectsenior}\\
+\textbf{naam:}	Diederich Kroeske\\
+\textbf{email:}	\\
+\\
+De projectsenior houd de voortgang van het project nauwlettend in de gaten. De senior is ook altijd bereikbaar voor vragen\\
 
 % A subsection named 'Typesetting content' is created
-\section{Typesetting content} \label{sec:typesetting}
-
-
-% A subsubsection named 'Equations' is created
-\subsection{Equations} \label{subsec:equations}
-
-% Inline equations
-An example of an inline equation is: the derivative of $x^2$ is $2x$. \Cref{eq:example} shows a display equation:
-% Display equations
-\begin{align} \label{eq:example}
-          y_{0} &= \frac{\sqrt{256}}{2} \\
-                &= 2^{3} = 8 \nonumber 
-\end{align}
-
-
-\subsection{Units} \label{subsec:units}
-
-% % Working with units
-An easy way to work with (SI) units: \SI{1}{\hertz} is equal to \SI{2\pi}{\radian\per\second}.
-
-
-\subsection{Figures} \label{subsec:figures}
-
-% Inserting a figure
-Here a figure named \textit{logo.pdf} is inserted\footnote{The \textit{logo.pdf} file is located in the figs folder.}:
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=50mm]{figs/logo}
-  \caption{Caption example}
-  \label{fig:logo}
-\end{figure}
-
-
-\subsection{Tables} \label{subsec:tables}
-
-% Inserting a table
-A table is shown in \cref{tb:table}.
+\section{Beschikbaarheid} \label{sec:typesetting}
+Op projectdagen dienen alle leden beschikbaar te zijn. De projectdagen zijn:
 \begin{table}[h]
-  \centering
-  \caption{Caption example}
   \label{tb:table}
   \begin{tabular}{crl}
     \toprule
-    Name     & Grade & Year    \\
+    Dag     & 			datum & 		tijden    \\
     \midrule
-    John     & 7.5   & 2012\\
-    Richard  & 2     & 2010\\
+    vrijdag     & 25 	april 	2014   & 9:30-17:00\\
+    vrijdag     & 2 	mei 	2014   & 9:30-17:00\\
+    vrijdag     & 9 	mei 	2014   & 9:30-17:00\\
+    vrijdag     & 16 	mei 	2014   & 9:30-17:00\\
+    vrijdag     & 23 	mei 	2014   & 9:30-17:00\\
+    vrijdag     & 30 	mei 	2014   & 9:30-17:00\\
+    vrijdag     & 6 	juni 	2014   & 9:30-17:00\\
     \bottomrule
   \end{tabular}
 \end{table}
-
-
-\subsection{Lists} \label{subsec:lists}
-% Creating lists
-%% Here a subsubsection is created. Note that this section is not shown in the table of content.
-\subsubsection{Numbered}
-Creating a numbered list:
-\begin{enumerate}
-  \item First entry
-  \item Second entry
-\end{enumerate}
-
-\subsubsection{Descriptive}
-Creating a descriptive list:
-\begin{description}
-  \item[First] entry
-  \item[Second] entry
-\end{description}
-
-
-\section{Reference to bibliography items} \label{sec:bibliography}
-First are reference to a website is made \cite{MiscEntry}, then a reference to an article \cite{ArticleEntry} and finally a reference to a book \cite{last2012}.
-
-\paragraph{Good luck!}
