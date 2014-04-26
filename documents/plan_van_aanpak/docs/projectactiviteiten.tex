@@ -1,86 +1,31 @@
-% A chapter named 'Your first document' is created
-\chapter{Projectactiviteiten} \label{cha:your-first-document}
+\chapter{Projectactiviteiten} \label{cha:projectactiviteiten}
 
 
-% A section called 'Basics' is created
-\section{Basics} \label{sec:basics}
 
-Text is formatted with: \textbf{bold}, \textit{italic} and \underline{underline}.
-\Cref{sec:basics} is part of \cref{cha:your-first-document}.
-
-
-% A subsection named 'Typesetting content' is created
-\section{Typesetting content} \label{sec:typesetting}
-
-
-% A subsubsection named 'Equations' is created
-\subsection{Equations} \label{subsec:equations}
-
-% Inline equations
-An example of an inline equation is: the derivative of $x^2$ is $2x$. \Cref{eq:example} shows a display equation:
-% Display equations
-\begin{align} \label{eq:example}
-          y_{0} &= \frac{\sqrt{256}}{2} \\
-                &= 2^{3} = 8 \nonumber 
-\end{align}
-
-
-\subsection{Units} \label{subsec:units}
-
-% % Working with units
-An easy way to work with (SI) units: \SI{1}{\hertz} is equal to \SI{2\pi}{\radian\per\second}.
-
-
-\subsection{Figures} \label{subsec:figures}
-
-% Inserting a figure
-Here a figure named \textit{logo.pdf} is inserted\footnote{The \textit{logo.pdf} file is located in the figs folder.}:
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=50mm]{figs/logo}
-  \caption{Caption example}
-  \label{fig:logo}
-\end{figure}
-
-
-\subsection{Tables} \label{subsec:tables}
-
-% Inserting a table
-A table is shown in \cref{tb:table}.
+\section{voorbereiding} \label{sec:voorbereiding}
+Ter voorbereiding van dit project zullen de geschikte tools worden gebruikt. Daarnaast zullen leden van het ontwikkelteam een projectrol op zich nemen en getraind worden. Tenslotte zal een ervaren senior toezicht houden op de voortgang van het project.
+\\
 \begin{table}[h]
   \centering
-  \caption{Caption example}
+  \caption{Voorbereidingen}
   \label{tb:table}
   \begin{tabular}{crl}
     \toprule
-    Name     & Grade & Year    \\
+    Naam     & Type\\
     \midrule
-    John     & 7.5   & 2012\\
-    Richard  & 2     & 2010\\
+    Git     & Versiebeheer\\
+    Visual Studio 2013  & Development\\
+    LaTeX & Documentatie\\    
     \bottomrule
   \end{tabular}
 \end{table}
-
-
-\subsection{Lists} \label{subsec:lists}
-% Creating lists
-%% Here a subsubsection is created. Note that this section is not shown in the table of content.
-\subsubsection{Numbered}
-Creating a numbered list:
+\subsection{Trainingen} \label{subsec:trainingen}
+De volgende trainingen zullen worden gegeven aan het ontwikkelteam:
 \begin{enumerate}
-  \item First entry
-  \item Second entry
+  \item Training computer vision
+  \item Training 3D computer graphics
+  \item Training C++
+  \item Training English presentation
+  \item Training Bedrijfskunde
 \end{enumerate}
 
-\subsubsection{Descriptive}
-Creating a descriptive list:
-\begin{description}
-  \item[First] entry
-  \item[Second] entry
-\end{description}
-
-
-\section{Reference to bibliography items} \label{sec:bibliography}
-First are reference to a website is made \cite{MiscEntry}, then a reference to an article \cite{ArticleEntry} and finally a reference to a book \cite{last2012}.
-
-\paragraph{Good luck!}
