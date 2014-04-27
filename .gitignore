@@ -45,3 +45,6 @@
 *.mtc1
 *.out
 *.synctex.gz
+
+# Images
+.db
