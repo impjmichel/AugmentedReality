@@ -1,5 +1,14 @@
-#Visual studio user specific files
+# Visual studio user specific files
 #*.props
+
+# Visual Studio debug files
+*.ilk
+*.pdb
+*.sdf
+*.suo
+*.tlog
+*.lastbuildstate
+*.idb
 
 # Compiled Object files
 *.slo
