@@ -1,5 +1,5 @@
 #Visual studio user specific files
-*.props
+#*.props
 
 # Compiled Object files
 *.slo
