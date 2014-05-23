@@ -23,31 +23,41 @@ const int MATCHES_THRESH = 3;
 const int HUE_BINS = 32;
 
 int main(int argc, char *argv[]) {
-	CvCapture *capture = 0; //The camera
-	IplImage* frame = 0; //The images you bring out of the camera
+	//Leest de videostream uit en geeft hiervoor een afbeelding(en) terug.
+	CvCapture *capture = 0;
+	//Bevat de gegevens van de afbeelding zoals de grote, kleur, diepte enz.
+	IplImage* frame = 0;
+	//Start de camera met als index nummer 0.
+	capture = cvCaptureFromCAM(0);
 
-	//Open the camera
-	capture = cvCaptureFromCAM(1);
+	//Geeft een foutmelding als de camera niet gevonden is.
 	if (!capture) {
 		printf("Could not connect to camera\n");
 		return 1;
 	}
 
+	//Geeft een afbeelding van de camera terug.
 	frame = cvQueryFrame(capture);
-	//Create two output windows
+
+	//Geeft de naam van de vensters en de grote. 
+	//Let op! Eén is de ruwe video, de ander is bewerkt met tracking.
 	cvNamedWindow("raw_video", CV_WINDOW_AUTOSIZE);
 	cvNamedWindow("processed_video", CV_WINDOW_AUTOSIZE);
 
-	//Used as storage element for Hough circles
+	//Wordt gebruikt als opslag element voor Hough circles. (De rode cirkels bij het detecteren van objecten.)
 	CvMemStorage* storage = cvCreateMemStorage(0);
 
-	// Grayscale image
+	//Bevat de gegevens van de grijswaarde afbeelding(Grayscale image) zoals de grote, kleur, diepte enz.
 	IplImage* grayscaleImg = cvCreateImage(cvSize(640, 480), 8/*depth*/, 1/*channels*/);
 
+	//2D gebaseerde punten met start coördinaten.
 	CvPoint track1 = { -1, -1 };
 	CvPoint track2 = { -1, -1 };
+
+
 	float rad1 = -1;
 	float rad2 = -1;
+
 	deque<CvSeq*> samples;
 	int key = 0;
 	while (key != 27 /*escape key to quit*/) {
@@ -55,33 +65,48 @@ int main(int argc, char *argv[]) {
 		frame = cvQueryFrame(capture);
 		if (!frame) break;
 
+
 		deque<CvSeq*> stableCircles;
-		//show the raw image in one of the windows
+
+		//Toont een ruwe afbeelding in één van de vensters.
 		cvShowImage("raw_video", frame);
+
+		//De CvSeq() laat dynamisch de reeks van elementen groeien.
+		//Roept de functie getCirclesInImage() aan met de frame, storage en grayscaleImg.
 		CvSeq* circles = getCirclesInImage(frame, storage, grayscaleImg);
 
-		//Iterate through the list of circles found by cvHoughCircles()
+		//Gaat de lijst van cirkels af, gevonden door de functie cvHoughCircles().
 		for (int i = 0; i < circles->total; i++) {
 			int matches = 0;
+			//De functie cvGetSeqElem() vindt het element de gegeven index nummer in een sequence en geeft dit terug als een float pointer.
 			float* p = (float*)cvGetSeqElem(circles, i);
 			float x = p[0];
 			float y = p[1];
 			float r = p[2];
+
 			if (x - r < 0 || y - r < 0 || x + r >= frame->width || y + r >= frame->height) {
 				continue;
 			}
+
+
 			for (int j = 0; j < samples.size(); j++) {
 				CvSeq* oldSample = samples[j];
 				for (int k = 0; k < oldSample->total; k++) {
 					float* p2 = (float*)cvGetSeqElem(oldSample, k);
+
+					//Roept de functie circlesBeHomies aan en geeft hiervoor een true of false terug.
 					if (circlesBeHomies(p, p2)) {
 						matches++;
 						break;
 					}
 				}
 			}
+
+			/////////////////////////////////////
+
 			if (matches > MATCHES_THRESH) {
 				cvSetImageROI(frame, cvRect(x - r, y - r, 2 * r, 2 * r));
+
 				IplImage* copy = cvCreateImage(cvSize(2 * r, 2 * r), frame->depth, 3);
 				cvCvtColor(frame, copy, CV_BGR2HSV);
 				IplImage* hue = cvCreateImage(cvGetSize(copy), copy->depth, 1);
@@ -105,6 +130,8 @@ int main(int argc, char *argv[]) {
 				}
 				cvResetImageROI(frame);
 				const char *color;
+
+
 				switch (highestBinSeen) {
 				case 2: case 3: case 4:
 					color = "orange";
@@ -152,7 +179,7 @@ CvSeq* getCirclesInImage(IplImage* frame, CvMemStorage* storage, IplImage* grays
 	// Gaussian filter for less noise
 	cvSmooth(grayscaleImg, grayscaleImg, CV_GAUSSIAN, 7, 9);
 
-	//Detect the circles in the image
+	//Detecteert de circels in de afbeelding.
 	CvSeq* circles = cvHoughCircles(grayscaleImg,
 		storage,
 		CV_HOUGH_GRADIENT,
@@ -168,16 +195,20 @@ float eucdist(CvPoint c1, CvPoint c2) {
 	return d;
 }
 
+//Tekent de cirkel op de oorspronkelijke afbeelding.
 void drawCircleAndLabel(IplImage* frame, float* p, const char* label) {
-	//Draw the circle on the original image
-	//There's lots of drawing commands you can use!
+
 	CvFont font;
 	cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, 1, 1, 0.0, 1, 8);
 	cvCircle(frame, cvPoint(cvRound(p[0]), cvRound(p[1])), cvRound(p[2]), CV_RGB(255, 0, 0), 3, 8, 0);
 	cvPutText(frame, label, cvPoint(cvRound(p[0]), cvRound(p[1])), &font, CV_RGB(255, 0, 0));
 }
 
+//De functie circlesBeHomies() haalt de waardes van elkaar af en controleert of de waarden x,y en z kleiner zijn dan X_THRESH, Y_THRESH en R_THRESH.
+//Bij een correcte validatie geeft het een TRUE anders FALSE.
 bool circlesBeHomies(float* c1, float* c2) {
+	//De functie abs() geeft de absolute waarde terug.
+	//X_THRESH en Y_THRESH zijn initialiseert met 15. R_THRESH is initialiseert met 20!
 	return (abs(c1[0] - c2[0]) < X_THRESH) && (abs(c1[1] - c2[1]) < Y_THRESH) &&
 		(abs(c1[2] - c2[2]) < R_THRESH);
 }
