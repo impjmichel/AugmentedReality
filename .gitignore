@@ -1,6 +1,3 @@
-# Visual studio user specific files
-#*.props
-
 # Visual Studio debug files
 *.ilk
 *.pdb
