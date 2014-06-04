@@ -80,23 +80,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ARma_demo.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="GraphicModel.cpp" />
-    <ClCompile Include="Grid.cpp" />
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="MainView.cpp" />
     <ClCompile Include="pattern.cpp" />
     <ClCompile Include="patterndetector.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
     <ClInclude Include="cameraparams.h" />
-    <ClInclude Include="GraphicModel.h" />
-    <ClInclude Include="Grid.h" />
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="MainView.h" />
-    <ClInclude Include="ModelInfo.h" />
     <ClInclude Include="pattern.h" />
     <ClInclude Include="patterndetector.h" />
     <ClInclude Include="stdafx.h" />
