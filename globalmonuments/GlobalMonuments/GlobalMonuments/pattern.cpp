@@ -117,12 +117,11 @@ namespace ARma {
 		for (i =0; i<4; i++){
 			cv::line(frame, model2ImagePts.at(i), model2ImagePts.at(i+4), color, 3);
 		}
-		
+
 		//draw the line that reflects the orientation. It indicates the bottom side of the pattern
 		cv::line(frame, model2ImagePts.at(2), model2ImagePts.at(3), cvScalar(80,255,80), 3);
 
 		model2ImagePts.clear();
 
 	}
-
 }
