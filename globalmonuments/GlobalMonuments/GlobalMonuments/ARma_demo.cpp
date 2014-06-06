@@ -55,15 +55,13 @@ int main(int argc, char** argv) {
 #endif
 
 	Mat imgMat;
-	int k=0;
-	while(k<500){ //modify it for longer/shorter videos
-		
+	while(true)
+	{
 		//mycapture >> imgMat; 
 		IplImage* img = cvQueryFrame(capture);
 		Mat imgMat = Mat(img);
 		//flip(imgMat, imgMat, 1);
 		double tic=(double)cvGetTickCount();
-
 
 		//run the detector
 		myDetector.detect(imgMat, cameraMatrix, distortions, patternLibrary, detectedPattern); 
@@ -84,7 +82,6 @@ int main(int argc, char** argv) {
 #endif
 		imshow("result", imgMat);
 		cvWaitKey(1);
-		k++;
 
 		detectedPattern.clear();
 	}
