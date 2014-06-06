@@ -126,37 +126,37 @@ void Keyboard(unsigned char key, int x, int y)
 }
 
 
-int main(int argc, char** argv) 
-{
-
-	glutInit(&argc, argv);
-	glutInitWindowSize(windowWidth, windowHeight);
-	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-	glutCreateWindow("GLUT example");
-	// Initialize OpenGL graphics state
-	InitGraphics();
-	// Register callbacks:
-	glutDisplayFunc(Display);
-	glutReshapeFunc(Reshape);
-	glutKeyboardFunc(Keyboard);
-	glutMouseFunc(MouseButton);
-	glutMotionFunc(MouseMotion);
-	glutIdleFunc(IdleFunc);
-	// Turn the flow of control over to GLUT
-
-	// Mist
-	glEnable(GL_FOG);
-	float FogCol[3] = { 0.9f, 0.0f, 0.0f };
-	glFogfv(GL_FOG_COLOR, FogCol);
-	glFogi(GL_FOG_MODE, GL_LINEAR);
-	glFogf(GL_FOG_START, 10.0f);
-	glFogf(GL_FOG_END, 40.0f);
-
-	glutMainLoop();
-
-	// OPENGL
-
-
-	return 0;
-
-}
+//int main(int argc, char** argv) 
+//{
+//
+//	glutInit(&argc, argv);
+//	glutInitWindowSize(windowWidth, windowHeight);
+//	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+//	glutCreateWindow("GLUT example");
+//	// Initialize OpenGL graphics state
+//	InitGraphics();
+//	// Register callbacks:
+//	glutDisplayFunc(Display);
+//	glutReshapeFunc(Reshape);
+//	glutKeyboardFunc(Keyboard);
+//	glutMouseFunc(MouseButton);
+//	glutMotionFunc(MouseMotion);
+//	glutIdleFunc(IdleFunc);
+//	// Turn the flow of control over to GLUT
+//
+//	// Mist
+//	glEnable(GL_FOG);
+//	float FogCol[3] = { 0.9f, 0.0f, 0.0f };
+//	glFogfv(GL_FOG_COLOR, FogCol);
+//	glFogi(GL_FOG_MODE, GL_LINEAR);
+//	glFogf(GL_FOG_START, 10.0f);
+//	glFogf(GL_FOG_END, 40.0f);
+//
+//	glutMainLoop();
+//
+//	// OPENGL
+//
+//
+//	return 0;
+//
+//}

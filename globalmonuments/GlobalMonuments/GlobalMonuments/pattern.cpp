@@ -14,7 +14,11 @@ namespace ARma {
 		rotVec = (Mat_<float>(3,1) << 0, 0, 0);
 		transVec = (Mat_<float>(3,1) << 0, 0, 0);
 		rotMat = Mat::eye(3, 3, CV_32F);
+
+
 	}
+
+	std::vector<cv::Point2f> model2ImagePts;
 
 	//convert rotation vector to rotation matrix (if you want to proceed with other libraries)
 	void Pattern::rotationMatrix(const Mat& rotation_vector, Mat& rotation_matrix)
@@ -24,7 +28,7 @@ namespace ARma {
 
 	void Pattern::showPattern()
 	{
-		cout << "Pattern ID: " << id << endl;
+		/*cout << "Pattern ID: " << id << endl;
 		cout << "Pattern Size: " << size << endl;
 		cout << "Pattern Confedince Value: " << confidence << endl;
 		cout << "Pattern Orientation: " << orientation << endl;
@@ -32,7 +36,7 @@ namespace ARma {
 		cout << "Exterior Matrix (from pattern to camera): " << endl;
 		for (int i = 0; i<3; i++){
 		cout << rotMat.at<float>(i,0) << "\t" << rotMat.at<float>(i,1) << "\t" << rotMat.at<float>(i,2) << " |\t"<< transVec.at<float>(i,0) << endl;
-		}
+		}*/
 	}
 
 	void Pattern::getExtrinsics(int patternSize, const Mat& cameraMatrix, const Mat& distortions)
@@ -74,9 +78,45 @@ namespace ARma {
 		cvFindExtrinsicCameraParams2(&objectPts, &imagePts, &intrinsics, &distCoeff, &rot, &tra);
 	}
 
+	Point getPoint(Point a, Point b)
+	{
+		int x1, y1;
+		if (a.x < b.x)
+			x1 = ((b.x - a.x) / 2) + a.x;
+		else if (a.x > b.x)
+			x1 = ((a.x - b.x) / 2) + b.x;
+		else
+			x1 = a.x;
+
+		if (a.y < b.y)
+			y1 = ((b.y - a.y) / 2) + a.y;
+		else if (a.y > b.y)
+			y1 = ((a.y - b.y) / 2) + b.y;
+		else
+			y1 = a.y;
+
+		return Point(x1, y1);
+	}	
+
+	Point getCenter()
+	{
+		if (model2ImagePts.size() > 3)
+			return getPoint(model2ImagePts.at(2), model2ImagePts.at(0));
+		else
+			return Point(0, 0);
+	}
+
+	Point getAncorPoint()
+	{
+		if (model2ImagePts.at(2).x != NULL)
+			return model2ImagePts.at(2);
+		else
+			return Point(0, 0);
+	}
+
 	void Pattern::draw(Mat& frame, const Mat& camMatrix, const Mat& distMatrix)
 	{
-
+		
 		CvScalar color = cvScalar(255,255,255);
 		
 		switch (id){
@@ -95,8 +135,6 @@ namespace ARma {
 		Mat modelPts = (Mat_<float>(8,3) << 0, 0, 0, size, 0, 0, size, size, 0, 0, size, 0,
 			0, 0, -size, size, 0, -size, size, size, -size, 0, size, -size );
 
-
-		std::vector<cv::Point2f> model2ImagePts;
 		/* project model 3D points to the image. Points through the transformation matrix 
 		(defined by rotVec and transVec) "are transfered" from the pattern CS to the 
 		camera CS, and then, points are projected using camera parameters 
@@ -106,7 +144,7 @@ namespace ARma {
 
 
 		//draw cube, or whatever
-		int i;
+		/*int i;
 		for (i =0; i<4; i++){
 			cv::line(frame, model2ImagePts.at(i%4), model2ImagePts.at((i+1)%4), color, 3);
 		}
@@ -116,10 +154,19 @@ namespace ARma {
 		cv::line(frame, model2ImagePts.at(7), model2ImagePts.at(4), color, 3);
 		for (i =0; i<4; i++){
 			cv::line(frame, model2ImagePts.at(i), model2ImagePts.at(i+4), color, 3);
-		}
+		}*/
+
 
 		//draw the line that reflects the orientation. It indicates the bottom side of the pattern
-		cv::line(frame, model2ImagePts.at(2), model2ImagePts.at(3), cvScalar(80,255,80), 3);
+		//cv::line(frame, model2ImagePts.at(2), model2ImagePts.at(3), cvScalar(80,255,80), 3);
+		//cout << "line point a: " << model2ImagePts.at(2) << endl;
+		//cout << "line point b: " << model2ImagePts.at(3) << endl;
+
+		
+		
+		cv::line(frame, getPoint(model2ImagePts.at(2), model2ImagePts.at(0)), model2ImagePts.at(2), cvScalar(255, 0, 0), 3);
+		cv::line(frame, getPoint(model2ImagePts.at(4), model2ImagePts.at(6)), getPoint(model2ImagePts.at(2), model2ImagePts.at(0)), cvScalar(0, 0, 255), 3);
+		cv::line(frame, getPoint(model2ImagePts.at(2), model2ImagePts.at(0)), model2ImagePts.at(1), cvScalar(0, 255, 0), 3);
 
 		model2ImagePts.clear();
 
