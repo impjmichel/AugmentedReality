@@ -54,10 +54,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ObjModel.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
