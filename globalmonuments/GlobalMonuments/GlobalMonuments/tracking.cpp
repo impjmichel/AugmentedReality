@@ -89,7 +89,6 @@ int loadPattern(const char* filename, std::vector<cv::Mat>& library, int& patter
 //	PatternDetector myDetector(fixed_thresh, adapt_thresh, adapt_block_size, confidenceThreshold, norm_pattern_size, mode);
 //
 //	CvCapture* capture = cvCaptureFromCAM(1);
-//
 //#if (SAVE_VIDEO)
 //	CvVideoWriter *video_writer = cvCreateVideoWriter("output.avi", -1, 25, cvSize(640, 480));
 //#endif

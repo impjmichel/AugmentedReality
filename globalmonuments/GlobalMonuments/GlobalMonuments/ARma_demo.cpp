@@ -1,6 +1,10 @@
 #include <GL/freeglut.h>
 #include <GL/GL.h>
 #include <iostream>
+#include "Texture.h"
+
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 using namespace std;
 
@@ -9,6 +13,10 @@ int eyeX, eyeY = 0;
 int windowWidth = 800;
 int windowHeight = 600;
 GLuint textureId = 0;
+Texture webcamTexture;
+
+cv::VideoCapture cap;
+cv::Mat dataImage;
 
 void drawAxis(void);
 
@@ -16,9 +24,6 @@ void InitGraphics(void)
 {
 
 }
-
-
-
 
 // OPENGL stuff, needs to be seperated in its own class
 
@@ -52,6 +57,52 @@ void drawAxis(void) {
 	glPopMatrix();
 }
 
+void drawTexCube(void)
+{
+	glPushMatrix();
+
+	glEnable(GL_TEXTURE_2D);
+	webcamTexture.activateTexture();
+	glBegin(GL_QUADS);
+	glTexCoord2f(2, 0);	glVertex3f(-10, -10, -10);
+	glTexCoord2f(2, 1);	glVertex3f(10, -10, -10);
+	glTexCoord2f(3, 1); glVertex3f(10, -10, 10);
+	glTexCoord2f(3, 0);	glVertex3f(-10, -10, 10);
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0);	glVertex3f(-1, 1, -1);
+	glTexCoord2f(0, 1);	glVertex3f(1, 1, -1);
+	glTexCoord2f(1, 1);	glVertex3f(1, 1, 1);
+	glTexCoord2f(1, 0);	glVertex3f(-1, 1, 1);
+
+	glTexCoord2f(3, 0);	glVertex3f(-1, 1, -1);
+	glTexCoord2f(3, 1);	glVertex3f(-1, -1, -1);
+	glTexCoord2f(4, 1); glVertex3f(-1, -1, 1);
+	glTexCoord2f(4, 0);	glVertex3f(-1, 1, 1);
+
+	glTexCoord2f(3, 0);	glVertex3f(1, 1, -1);
+	glTexCoord2f(3, 1);	glVertex3f(1, -1, -1);
+	glTexCoord2f(4, 1); glVertex3f(1, -1, 1);
+	glTexCoord2f(4, 0);	glVertex3f(1, 1, 1);
+
+	glTexCoord2f(3, 0);	glVertex3f(-1, 1, -1); 		// T, L
+	glTexCoord2f(3, 1);	glVertex3f(-1, -1, -1); 	// B, L
+	glTexCoord2f(4, 1); glVertex3f(1, -1, -1); 		// B, R
+	glTexCoord2f(4, 0);	glVertex3f(1, 1, -1);		// T, R
+
+	glTexCoord2f(3, 0);	glVertex3f(-1, 1, 1);
+	glTexCoord2f(3, 1);	glVertex3f(-1, -1, 1);
+	glTexCoord2f(4, 1); glVertex3f(1, -1, 1);
+	glTexCoord2f(4, 0);	glVertex3f(1, 1, 1);
+
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D); // stops textures from overdrawing on glColor3f()
+
+	glPopMatrix();
+}
+
 void Display(void)
 {
 	glEnable(GL_DEPTH_TEST); // prevents texture overlay
@@ -70,7 +121,7 @@ void Display(void)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	drawAxis();
+	drawTexCube();
 	glutSwapBuffers();
 }
 
@@ -91,7 +142,13 @@ void MouseMotion(int x, int y)
 void IdleFunc(void)
 {
 	angle += 0.1;
-	glutPostRedisplay();
+	glutPostRedisplay();		
+
+	cap >> dataImage;
+	webcamTexture = Texture(dataImage.data, 0);
+	cv::imshow("Test", dataImage);
+	glGenTextures(1, &textureId);
+	webcamTexture.loadTexture();
 }
 
 void Keyboard(unsigned char key, int x, int y)
@@ -126,7 +183,6 @@ void Keyboard(unsigned char key, int x, int y)
 }
 
 
-
 int main(int argc, char** argv) 
 {
 
@@ -153,11 +209,10 @@ int main(int argc, char** argv)
 	glFogf(GL_FOG_START, 10.0f);
 	glFogf(GL_FOG_END, 40.0f);
 
+	//OpenCV
+	cap.open(1);
+
 	glutMainLoop();
 
-	// OPENGL
-
-
 	return 0;
-
 }
