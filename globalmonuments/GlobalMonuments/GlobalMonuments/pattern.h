@@ -33,6 +33,8 @@ class Pattern
 		//prints the properties of the patten and its transformation matrix
 		void showPattern(void);
 
+		void drawAxis(void);
+			
 };
 
 
