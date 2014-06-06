@@ -87,6 +87,7 @@
     <ClCompile Include="pattern.cpp" />
     <ClCompile Include="patterndetector.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="tracking.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraparams.h" />

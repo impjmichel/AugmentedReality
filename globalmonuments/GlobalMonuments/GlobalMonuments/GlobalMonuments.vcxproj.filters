@@ -27,6 +27,9 @@
     <ClCompile Include="patterndetector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tracking.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cameraparams.h">
