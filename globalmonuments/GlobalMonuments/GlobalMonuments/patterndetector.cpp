@@ -146,7 +146,7 @@ void PatternDetector::detect(const Mat& frame, const Mat& cameraMatrix, const Ma
 					patCand.id = out.index;
 					patCand.orientation = out.ori;
 					patCand.confidence = out.maxCor;
-					cout << "Id: " << patCand.id << endl;
+					// cout << "Id: " << patCand.id << endl;
 
 					for (j=0; j<4; j++){
 						patCand.vertices.push_back(refinedVertices.at((8-out.ori+v1-j)%4));
@@ -155,7 +155,6 @@ void PatternDetector::detect(const Mat& frame, const Mat& cameraMatrix, const Ma
 					//find the transformation (from camera CS to pattern CS)
 					patCand.getExtrinsics(patCand.size, cameraMatrix, distortions);
 					foundPatterns.push_back(patCand);
-
 				}
 			}
 		}
@@ -194,7 +193,6 @@ void PatternDetector::normalizePattern(const Mat& src, const Point2f roiPoints[]
 	//compute the homography
 	Mat Homo(3,3,CV_32F);
 	Homo = getPerspectiveTransform( roiPoints, norm2DPts);
-	
 	cv::Mat subImg = src(cv::Range(rec.y, rec.y+rec.height), cv::Range(rec.x, rec.x+rec.width));
 
 	//warp the input based on the homography model to get the normalized ROI
@@ -263,8 +261,8 @@ int PatternDetector::identifyPattern(const Mat& src, std::vector<cv::Mat>& loade
 		}
 	}
 
-	cout << "MaxCor: " << info.maxCor << endl;
-	cout << "Ori: " << info.ori << endl;
+	// cout << "MaxCor: " << info.maxCor << endl;
+	// cout << "Ori: " << info.ori << endl;
 
 	if (info.maxCor>confThreshold)
 		return 1;

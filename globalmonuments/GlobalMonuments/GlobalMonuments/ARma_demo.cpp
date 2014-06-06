@@ -68,12 +68,13 @@ int main(int argc, char** argv) {
 
 		double toc=(double)cvGetTickCount();
 		double detectionTime = (toc-tic)/((double) cvGetTickFrequency()*1000);
-		cout << "Detected Patterns: " << detectedPattern.size() << endl;
-		cout << "Detection time: " << detectionTime << endl;
+		//cout << "Detected Patterns: " << detectedPattern.size() << endl;
+		//cout << "Detection time: " << detectionTime << endl;
 
 		//augment the input frame (and print out the properties of pattern if you want)
-		for (unsigned int i =0; i<detectedPattern.size(); i++){
-			//detectedPattern.at(i).showPattern();
+		for (unsigned int i =0; i<detectedPattern.size(); i++)
+		{
+			detectedPattern.at(i).showPattern();
 			detectedPattern.at(i).draw( imgMat, cameraMatrix, distortions);
 		}
 
