@@ -153,11 +153,13 @@ void Display(void)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	drawWebcamPlane();
+
 	glRotatef(rotation, 0, 1, 0);
 	if (models.size() > 0)
 		models[currentModel].second->draw();
 
-	drawWebcamPlane();
+	
 	//drawTexCube();
 	//drawAxis();
 
@@ -185,15 +187,15 @@ void MouseMotion(int x, int y)
 void IdleFunc(void)
 {
 	angle += 0.1;
-	//rotation += 0.25f;
+	rotation += 0.25f;
 	glutPostRedisplay();		
 
 	cap >> dataImage;
 	
-	//webcamTexture.changeTexture( (dataImage.ptr()) );
-	//webcamTexture.activateTexture();
-	webcamTexture = Texture(dataImage.ptr(), 0, dataImage.cols, dataImage.rows);
-	webcamTexture.loadTexture();
+	//webcamTexture = Texture(dataImage.ptr(), 0, dataImage.cols, dataImage.rows);
+	//webcamTexture.loadTexture(1);
+	webcamTexture.changeTexture();	
+
 	cv::imshow("Test", dataImage);
 	//glGenTextures(1, &textureId); dont keep generating new textures! >:(
 	
@@ -248,8 +250,6 @@ int main(int argc, char** argv)
 	glutIdleFunc(IdleFunc);
 	// Turn the flow of control over to GLUT
 
-	
-
 	// Mist
 	//glEnable(GL_FOG);
 	float FogCol[3] = { 0.9f, 0.0f, 0.0f };
@@ -260,6 +260,10 @@ int main(int argc, char** argv)
 
 	// OpenCV
 	cap.open(1);
+
+	cap >> dataImage; // do this once so it points to actual data later on
+	webcamTexture = Texture(dataImage.ptr(), 0, dataImage.cols, dataImage.rows);
+	webcamTexture.loadTexture(1);
 
 	glutMainLoop();
 

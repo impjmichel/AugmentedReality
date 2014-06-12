@@ -12,13 +12,13 @@ private:
 	int bpp;
 	std::string filename;
 	unsigned char* imgData;
-public:
+public:	
 	Texture();
 	Texture(std::string filename, GLuint textureId, int width = 256, int height = 256, int bpp = 4);
 	Texture(unsigned char* imgData, GLuint textureId, int width = 256, int height = 256, int bpp = 4);
-	void loadTexture();
+	void loadTexture(char type);
 	void activateTexture();
-	void changeTexture(unsigned char *imgData);
+	void changeTexture();
 	int getWidth() const;
 	int getHeight() const;
 	std::string getFilename() const;

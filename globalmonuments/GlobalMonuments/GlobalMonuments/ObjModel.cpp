@@ -221,7 +221,7 @@ void ObjModel::loadMaterialFile( std::string fileName, std::string dirName )
 		{
 			currentMaterial->hasTexture = true;
 			currentMaterial->texture = new Texture(dirName + "\\" + params[1], 0);
-			currentMaterial->texture->loadTexture();
+			currentMaterial->texture->loadTexture(0);
 		}
 		else
 			std::cout<<"Didn't parse "<<params[0]<<" in material file"<<std::endl;
