@@ -40,6 +40,8 @@ void InitGraphics(void)
 	//models.push_back(pair<int, ObjModel*>(75, new ObjModel("models/vampire/3D_vampire.obj")));	
 	models.push_back(pair<int, ObjModel*>(75, new ObjModel("models/planets/earth.obj")));
 	models.push_back(pair<int, ObjModel*>(75, new ObjModel("models/planets/mars.obj")));
+	models.push_back(pair<int, ObjModel*>(75, new ObjModel("models/planets/jupiter.obj")));
+	models.push_back(pair<int, ObjModel*>(75, new ObjModel("models/planets/saturn.obj")));
 }
 
 // OPENGL stuff, needs to be seperated in its own class
