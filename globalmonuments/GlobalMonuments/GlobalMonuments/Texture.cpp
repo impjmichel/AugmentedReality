@@ -32,6 +32,10 @@ void Texture::activateTexture() {
 	glBindTexture(GL_TEXTURE_2D, textureId);
 }
 
+void Texture::changeTexture(unsigned char *imgData) {
+	this->imgData = imgData;
+}
+
 int Texture::getWidth() const {
 	return width;
 }

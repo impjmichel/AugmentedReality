@@ -18,6 +18,7 @@ public:
 	Texture(unsigned char* imgData, GLuint textureId, int width = 256, int height = 256, int bpp = 4);
 	void loadTexture();
 	void activateTexture();
+	void changeTexture(unsigned char *imgData);
 	int getWidth() const;
 	int getHeight() const;
 	std::string getFilename() const;

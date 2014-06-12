@@ -11,6 +11,7 @@ using namespace std;
 
 float angle, eyeAngle = 0;
 int eyeX, eyeY = 0;
+float cameraX, cameraZ;
 int windowWidth = 1000;
 int windowHeight = 800;
 GLuint textureId = 0;
@@ -27,15 +28,18 @@ void drawAxis(void);
 
 void InitGraphics(void)
 {
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
+	// Lighting
+	//glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
 
 	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	models.push_back(pair<int, ObjModel*>(75, new ObjModel("models/vampire/3D_vampire.obj")));
+	//models.push_back(pair<int, ObjModel*>(75, new ObjModel("models/vampire/3D_vampire.obj")));	
+	models.push_back(pair<int, ObjModel*>(75, new ObjModel("models/planets/earth.obj")));
+	models.push_back(pair<int, ObjModel*>(75, new ObjModel("models/planets/mars.obj")));
 }
 
 // OPENGL stuff, needs to be seperated in its own class
@@ -77,13 +81,11 @@ void drawTexCube(void)
 	glEnable(GL_TEXTURE_2D);
 	webcamTexture.activateTexture();
 	glBegin(GL_QUADS);
-	glTexCoord2f(2, 0);	glVertex3f(-10, -10, -10);
-	glTexCoord2f(2, 1);	glVertex3f(10, -10, -10);
-	glTexCoord2f(3, 1); glVertex3f(10, -10, 10);
-	glTexCoord2f(3, 0);	glVertex3f(-10, -10, 10);
-	glEnd();
+	glTexCoord2f(2, 0);	glVertex3f(-1, -1, -1);
+	glTexCoord2f(2, 1);	glVertex3f(1, -1, -1);
+	glTexCoord2f(3, 1); glVertex3f(1, -1, 1);
+	glTexCoord2f(3, 0);	glVertex3f(-1, -1, 1);
 
-	glBegin(GL_QUADS);
 	glTexCoord2f(0, 0);	glVertex3f(-1, 1, -1);
 	glTexCoord2f(0, 1);	glVertex3f(1, 1, -1);
 	glTexCoord2f(1, 1);	glVertex3f(1, 1, 1);
@@ -116,6 +118,23 @@ void drawTexCube(void)
 	glPopMatrix();
 }
 
+void drawWebcamPlane(void) {
+	glPushMatrix();
+
+	glEnable(GL_TEXTURE_2D);
+	webcamTexture.activateTexture();
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0);	glVertex3f(-10, 10, 20);
+	glTexCoord2f(1, 0); glVertex3f(-10, 10, -20);
+	glTexCoord2f(1, 1);	glVertex3f(-10, -10, -20);
+	glTexCoord2f(0, 1);	glVertex3f(-10, -10, 20);	
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D); // stops textures from overdrawing on glColor3f()
+
+	glPopMatrix();
+}
+
 void Display(void)
 {
 	glEnable(GL_DEPTH_TEST); // prevents texture overlay
@@ -125,8 +144,8 @@ void Display(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	float cameraX = 10 * cos(eyeAngle);
-	float cameraZ = 10 * sin(eyeAngle);
+	cameraX = 10 * cos(eyeAngle);
+	cameraZ = 10 * sin(eyeAngle);
 
 	gluLookAt(cameraX, eyeY, cameraZ,	// eye
 		0, 0, 0,	// center
@@ -138,8 +157,8 @@ void Display(void)
 	if (models.size() > 0)
 		models[currentModel].second->draw();
 
-	drawTexCube();
-
+	drawWebcamPlane();
+	//drawTexCube();
 	//drawAxis();
 
 	glutSwapBuffers();
@@ -171,9 +190,10 @@ void IdleFunc(void)
 
 	cap >> dataImage;
 	
+	//webcamTexture.changeTexture( (dataImage.ptr()) );
+	//webcamTexture.activateTexture();
 	webcamTexture = Texture(dataImage.ptr(), 0, dataImage.cols, dataImage.rows);
 	webcamTexture.loadTexture();
-
 	cv::imshow("Test", dataImage);
 	//glGenTextures(1, &textureId); dont keep generating new textures! >:(
 	
@@ -186,22 +206,22 @@ void Keyboard(unsigned char key, int x, int y)
 	case 27:             // ESCAPE key
 		exit(0);
 		break;
+	case '[':
+		currentModel = (currentModel + models.size() - 1) % models.size();
+		break;
+	case ']':
+		currentModel = (currentModel + 1) % models.size();
+		break;
 	case 'w':
 		eyeY++;
-		break;
-	case 'a':
-		eyeX--;
 		break;
 	case 's':
 		eyeY--;
 		break;
-	case 'd':
-		eyeX++;
-		break;
-	case 'q':
+	case 'a':
 		eyeAngle -= 0.1f;
 		break;
-	case 'e':
+	case 'd':
 		eyeAngle += 0.1f;
 		break;
 	case 'r':
@@ -228,8 +248,10 @@ int main(int argc, char** argv)
 	glutIdleFunc(IdleFunc);
 	// Turn the flow of control over to GLUT
 
+	
+
 	// Mist
-	glEnable(GL_FOG);
+	//glEnable(GL_FOG);
 	float FogCol[3] = { 0.9f, 0.0f, 0.0f };
 	glFogfv(GL_FOG_COLOR, FogCol);
 	glFogi(GL_FOG_MODE, GL_LINEAR);
