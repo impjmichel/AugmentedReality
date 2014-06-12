@@ -58,80 +58,81 @@ int loadPattern(const char* filename, std::vector<cv::Mat>& library, int& patter
 	//}
 }
 
-//int main()
-//{
-//	std::vector<cv::Mat> patternLibrary;
-//	std::vector<Pattern> detectedPattern;
-//	int patternCount = 0;
-//
-//	/*create patterns' library using rotated versions of patterns
-//	*/
-//	loadPattern(filename1, patternLibrary, patternCount);
-//#if (NUM_OF_PATTERNS==2)
-//	loadPattern(filename2, patternLibrary, patternCount);
-//#endif
-//#if (NUM_OF_PATTERNS==3)
-//	loadPattern(filename2, patternLibrary, patternCount);
-//	loadPattern(filename3, patternLibrary, patternCount);
-//#endif
-//
-//
-//	cout << patternCount << " patterns are loaded." << endl;
-//
-//
-//	int norm_pattern_size = PAT_SIZE;
-//	double fixed_thresh = 40;
-//	double adapt_thresh = 5;//non-used with FIXED_THRESHOLD mode
-//	int adapt_block_size = 45;//non-used with FIXED_THRESHOLD mode
-//	double confidenceThreshold = 0.35;
-//	int mode = 2;//1:FIXED_THRESHOLD, 2: ADAPTIVE_THRESHOLD
-//
-//	PatternDetector myDetector(fixed_thresh, adapt_thresh, adapt_block_size, confidenceThreshold, norm_pattern_size, mode);
-//
-//	CvCapture* capture = cvCaptureFromCAM(1);
-//#if (SAVE_VIDEO)
-//	CvVideoWriter *video_writer = cvCreateVideoWriter("output.avi", -1, 25, cvSize(640, 480));
-//#endif
-//
-//	Mat imgMat;
-//	while (true)
-//	{
-//		//mycapture >> imgMat; 
-//		IplImage* img = cvQueryFrame(capture);
-//		Mat imgMat = Mat(img);
-//		//flip(imgMat, imgMat, 1);
-//		double tic = (double)cvGetTickCount();
-//
-//		//run the detector
-//		myDetector.detect(imgMat, cameraMatrix, distortions, patternLibrary, detectedPattern);
-//
-//		double toc = (double)cvGetTickCount();
-//		double detectionTime = (toc - tic) / ((double)cvGetTickFrequency() * 1000);
-//		//cout << "Detected Patterns: " << detectedPattern.size() << endl;
-//		//cout << "Detection time: " << detectionTime << endl;
-//
-//		//augment the input frame (and print out the properties of pattern if you want)
-//		for (unsigned int i = 0; i<detectedPattern.size(); i++)
-//		{
-//			detectedPattern.at(i).showPattern();
-//			detectedPattern.at(i).draw(imgMat, cameraMatrix, distortions);
-//
-//			// Draw OpenGL here
-//		}
-//
-//#if (SAVE_VIDEO)
-//		cvWriteFrame(video_writer, &((IplImage)imgMat));
-//#endif
-//		imshow("result", imgMat);
-//		cvWaitKey(1);
-//
-//		detectedPattern.clear();
-//	}
-//
-//#if (SAVE_VIDEO)
-//	cvReleaseVideoWriter(&video_writer);
-//#endif
-//	cvReleaseCapture(&capture);
-//
-//	return 0;
-//}
+int main2()
+{
+	std::vector<cv::Mat> patternLibrary;
+	std::vector<Pattern> detectedPattern;
+	int patternCount = 0;
+
+	/*create patterns' library using rotated versions of patterns
+	*/
+	loadPattern(filename1, patternLibrary, patternCount);
+#if (NUM_OF_PATTERNS==2)
+	loadPattern(filename2, patternLibrary, patternCount);
+#endif
+#if (NUM_OF_PATTERNS==3)
+	loadPattern(filename2, patternLibrary, patternCount);
+	loadPattern(filename3, patternLibrary, patternCount);
+#endif
+
+
+	cout << patternCount << " patterns are loaded." << endl;
+
+
+	int norm_pattern_size = PAT_SIZE;
+	double fixed_thresh = 40;
+	double adapt_thresh = 5;//non-used with FIXED_THRESHOLD mode
+	int adapt_block_size = 45;//non-used with FIXED_THRESHOLD mode
+	double confidenceThreshold = 0.35;
+	int mode = 2;//1:FIXED_THRESHOLD, 2: ADAPTIVE_THRESHOLD
+
+	PatternDetector myDetector(fixed_thresh, adapt_thresh, adapt_block_size, confidenceThreshold, norm_pattern_size, mode);
+
+	CvCapture* capture = cvCaptureFromCAM(1);
+
+#if (SAVE_VIDEO)
+	CvVideoWriter *video_writer = cvCreateVideoWriter("output.avi", -1, 25, cvSize(640, 480));
+#endif
+
+	Mat imgMat;
+	while (true)
+	{
+		//mycapture >> imgMat; 
+		IplImage* img = cvQueryFrame(capture);
+		Mat imgMat = Mat(img);
+		flip(imgMat, imgMat, 1);
+		double tic = (double)cvGetTickCount();
+
+		//run the detector
+		myDetector.detect(imgMat, cameraMatrix, distortions, patternLibrary, detectedPattern);
+
+		double toc = (double)cvGetTickCount();
+		double detectionTime = (toc - tic) / ((double)cvGetTickFrequency() * 1000);
+		//cout << "Detected Patterns: " << detectedPattern.size() << endl;
+		//cout << "Detection time: " << detectionTime << endl;
+
+		//augment the input frame (and print out the properties of pattern if you want)
+		for (unsigned int i = 0; i<detectedPattern.size(); i++)
+		{
+			detectedPattern.at(i).showPattern();
+			detectedPattern.at(i).draw(imgMat, cameraMatrix, distortions);
+
+			// Draw OpenGL here
+		}
+
+#if (SAVE_VIDEO)
+		cvWriteFrame(video_writer, &((IplImage)imgMat));
+#endif
+		imshow("result", imgMat);
+		cvWaitKey(1);
+
+		detectedPattern.clear();
+	}
+
+#if (SAVE_VIDEO)
+	cvReleaseVideoWriter(&video_writer);
+#endif
+	cvReleaseCapture(&capture);
+
+	return 0;
+}
