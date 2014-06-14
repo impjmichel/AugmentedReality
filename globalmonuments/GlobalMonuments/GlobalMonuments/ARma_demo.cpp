@@ -10,6 +10,7 @@
 using namespace std;
 
 float angle, eyeAngle = 0;
+const float ROTATE_FACTOR = 3.0f;
 const float MOVE_FACTOR = 1.0f;
 float moveX, moveY, moveZ = 0;
 int eyeX, eyeY = 0;
@@ -20,7 +21,7 @@ GLuint textureId = 0;
 Texture webcamTexture;
 
 int currentModel = 0;
-float rotation = 0;
+float rotationX, rotationY, rotationZ = 0;
 vector<pair<int, ObjModel*> > models;
 
 cv::VideoCapture cap;
@@ -165,7 +166,9 @@ void Display(void)
 	glTranslatef(moveX, moveY, moveZ);
 
 	glTranslatef(0, 0, 0); // move back to origin so planet rotates around its own axis
-	glRotatef(rotation, 0, 1, 0);
+	glRotatef(rotationX, 1, 0, 0); // Rotations dont rotate around their axis (except last one)
+	glRotatef(rotationY, 0, 1, 0);
+	glRotatef(rotationZ, 0, 0, 1);
 	
 	if (models.size() > 0)
 		models[currentModel].second->draw();
@@ -235,14 +238,23 @@ void Keyboard(unsigned char key, int x, int y)
 	case 'd':
 		eyeAngle += 0.1f;
 		break;
-	case 'r':
-		eyeY = eyeX = 0;
+	case 'x':
+		rotationX -= ROTATE_FACTOR;
 		break;
-	case 'e' :
-		rotation += 3.0f;
+	case 'z':
+		rotationX += ROTATE_FACTOR;
 		break;
-	case 'q':
-		rotation -= 3.0f;
+	case 'q' :
+		rotationY -= ROTATE_FACTOR;
+		break;
+	case 'e':
+		rotationY += ROTATE_FACTOR;
+		break;
+	case 'c':
+		rotationZ -= ROTATE_FACTOR;
+		break;
+	case 'v':
+		rotationZ += ROTATE_FACTOR;
 		break;
 	case 'j':
 		moveZ += MOVE_FACTOR;
