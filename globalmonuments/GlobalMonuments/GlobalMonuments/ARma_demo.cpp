@@ -161,9 +161,11 @@ void Display(void)
 	glDisable(GL_BLEND);
 	drawWebcamPlane();
 
-	glRotatef(rotation, 0, 1, 0);
-
 	glTranslatef(moveX, moveY, moveZ);
+
+	glTranslatef(0, 0, 0); // move back to origin so planet rotates around its own axis
+	glRotatef(rotation, 0, 1, 0);
+	
 	if (models.size() > 0)
 		models[currentModel].second->draw();
 
