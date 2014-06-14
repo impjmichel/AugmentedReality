@@ -10,6 +10,8 @@
 using namespace std;
 
 float angle, eyeAngle = 0;
+const float MOVE_FACTOR = 1.0f;
+float moveX, moveY, moveZ = 0;
 int eyeX, eyeY = 0;
 float cameraX, cameraZ;
 int windowWidth = 1000;
@@ -47,8 +49,8 @@ void InitGraphics(void)
 // OPENGL stuff, needs to be seperated in its own class
 
 void drawAxis(void) {
-	glPushMatrix();
 
+	glPushMatrix();
 	// X-axis
 	glBegin(GL_LINES);
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -73,6 +75,7 @@ void drawAxis(void) {
 	glVertex3f(0, 0, 10);
 	glEnd();
 
+	glColor3f(1.0f, 1.0f, 1.0f); // Stops color blending, but it does not seem best practice this way
 	glPopMatrix();
 }
 
@@ -126,13 +129,13 @@ void drawWebcamPlane(void) {
 	glEnable(GL_TEXTURE_2D);
 	webcamTexture.activateTexture();
 	glBegin(GL_QUADS);
-	glTexCoord2f(0, 0);	glVertex3f(-10, 10, 20);
-	glTexCoord2f(1, 0); glVertex3f(-10, 10, -20);
-	glTexCoord2f(1, 1);	glVertex3f(-10, -10, -20);
-	glTexCoord2f(0, 1);	glVertex3f(-10, -10, 20);	
+	// Adjust values so they fit the viewport exactly
+	glTexCoord2f(0, 0);	glVertex3f(-10, 14, 18);
+	glTexCoord2f(1, 0); glVertex3f(-10, 14, -18);
+	glTexCoord2f(1, 1);	glVertex3f(-10, -14, -18);
+	glTexCoord2f(0, 1);	glVertex3f(-10, -14, 18);	
 	glEnd();
-
-	glDisable(GL_TEXTURE_2D); // stops textures from overdrawing on glColor3f()
+	glDisable(GL_TEXTURE_2D); // stops textures from overdrawing on glColor3f()	
 
 	glPopMatrix();
 }
@@ -155,16 +158,18 @@ void Display(void)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glDisable(GL_BLEND);
 	drawWebcamPlane();
 
 	glRotatef(rotation, 0, 1, 0);
+
+	glTranslatef(moveX, moveY, moveZ);
 	if (models.size() > 0)
 		models[currentModel].second->draw();
 
 	
 	//drawTexCube();
-	//drawAxis();
-
+	drawAxis();
 	glutSwapBuffers();
 }
 
@@ -188,8 +193,7 @@ void MouseMotion(int x, int y)
 
 void IdleFunc(void)
 {
-	angle += 0.1;
-	rotation += 0.25f;
+	angle += 0.1;	
 	glutPostRedisplay();		
 
 	cap >> dataImage;
@@ -230,6 +234,30 @@ void Keyboard(unsigned char key, int x, int y)
 		break;
 	case 'r':
 		eyeY = eyeX = 0;
+		break;
+	case 'e' :
+		rotation += 3.0f;
+		break;
+	case 'q':
+		rotation -= 3.0f;
+		break;
+	case 'j':
+		moveZ += MOVE_FACTOR;
+		break;
+	case 'l':
+		moveZ -= MOVE_FACTOR;
+		break;
+	case 'i':
+		moveY += MOVE_FACTOR;
+		break;
+	case 'k':
+		moveY -= MOVE_FACTOR;
+		break;
+	case 'o':
+		moveX += MOVE_FACTOR;
+		break;
+	case 'u':
+		moveX -= MOVE_FACTOR;
 		break;
 	}
 }
