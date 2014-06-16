@@ -6,8 +6,11 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include "cameraparams.h"
+#include "patterndetector.h"
 
 using namespace std;
+using namespace ARma;
 
 float angle, eyeAngle = 0;
 const float ROTATE_FACTOR = 3.0f;
@@ -27,7 +30,32 @@ vector<pair<int, ObjModel*> > models;
 cv::VideoCapture cap;
 cv::Mat dataImage;
 
+// PATTERN DETECTION
+#define PAT_SIZE 64//equal to pattern_size variable (see below)
+#define SAVE_VIDEO 0 //if true, it saves the video in "output.avi"
+#define NUM_OF_PATTERNS 3// define the number of patterns you want to use
+
+char* filename1 = "pattern1.png";//id=1
+char* filename2 = "pattern4.png";//id=2
+char* filename3 = "pattern5.png";//id=3
+
+CvCapture* capture;
+vector<cv::Mat> patternLibrary;
+vector<Pattern> detectedPattern;
+int patternCount = 0;
+
+int norm_pattern_size = PAT_SIZE;
+double fixed_thresh = 40;
+double adapt_thresh = 5;//non-used with FIXED_THRESHOLD mode
+int adapt_block_size = 45;//non-used with FIXED_THRESHOLD mode
+double confidenceThreshold = 0.35;
+int mode = 2;//1:FIXED_THRESHOLD, 2: ADAPTIVE_THRESHOLD
+
+PatternDetector myDetector(fixed_thresh, adapt_thresh, adapt_block_size, confidenceThreshold, norm_pattern_size, mode);
+
+static int loadPattern(const char*, std::vector<cv::Mat>&, int&);
 void drawAxis(void);
+void trackLoop(void);
 
 void InitGraphics(void)
 {
@@ -135,9 +163,9 @@ void drawWebcamPlane(void) {
 	glTexCoord2f(0, 0);	glVertex3f(-10, 14, 18);
 	glTexCoord2f(1, 0); glVertex3f(-10, 14, -18);
 	glTexCoord2f(1, 1);	glVertex3f(-10, -14, -18);
-	glTexCoord2f(0, 1);	glVertex3f(-10, -14, 18);	
+	glTexCoord2f(0, 1);	glVertex3f(-10, -14, 18);
 	glEnd();
-	glDisable(GL_TEXTURE_2D); // stops textures from overdrawing on glColor3f()	
+	glDisable(GL_TEXTURE_2D); // stops textures from overdrawing on glColor3f()
 
 	glPopMatrix();
 }
@@ -165,10 +193,11 @@ void Display(void)
 
 	glTranslatef(moveX, moveY, moveZ);
 
-	glTranslatef(0, 0, 0); // move back to origin so planet rotates around its own axis
+	glTranslatef(0, 0, 0); // move back to origin so planet rotates in the origin
 	glRotatef(rotationX, 1, 0, 0); // Rotations dont rotate around their axis (except last one)
 	glRotatef(rotationY, 0, 1, 0);
 	glRotatef(rotationZ, 0, 0, 1);
+
 	
 	if (models.size() > 0)
 		models[currentModel].second->draw();
@@ -208,9 +237,10 @@ void IdleFunc(void)
 	//webcamTexture.loadTexture(1);
 	webcamTexture.changeTexture();	
 
-	cv::imshow("Test", dataImage);
+	//cv::imshow("Test", dataImage);
 	//glGenTextures(1, &textureId); dont keep generating new textures! >:(
 	
+	trackLoop();
 }
 
 void Keyboard(unsigned char key, int x, int y)
@@ -277,8 +307,59 @@ void Keyboard(unsigned char key, int x, int y)
 	}
 }
 
+// PATTERN DETECTION
+int loadPattern(const char* filename, std::vector<cv::Mat>& library, int& patternCount){
+
+	Mat img = imread(filename, 0);
+
+	if (img.cols != img.rows){
+		return -1;
+		printf("Not a square pattern");
+	}
+
+	int msize = PAT_SIZE;
+
+	Mat src(msize, msize, CV_8UC1);
+	Point2f center((msize - 1) / 2.0f, (msize - 1) / 2.0f);
+	Mat rot_mat(2, 3, CV_32F);
+
+	resize(img, src, Size(msize, msize));
+	Mat subImg = src(Range(msize / 4, 3 * msize / 4), Range(msize / 4, 3 * msize / 4));
+	library.push_back(subImg);
+
+	rot_mat = getRotationMatrix2D(center, 90, 1.0);
+
+	for (int i = 1; i < 4; i++){
+		Mat dst = Mat(msize, msize, CV_8UC1);
+		rot_mat = getRotationMatrix2D(center, -i * 90, 1.0);
+		warpAffine(src, dst, rot_mat, Size(msize, msize));
+		Mat subImg = dst(Range(msize / 4, 3 * msize / 4), Range(msize / 4, 3 * msize / 4));
+		library.push_back(subImg);
+	}
+
+	patternCount++;
+
+	return 1;
+}
+
 int main(int argc, char** argv) 
 {
+	// PATTERN DETECTION
+	/*create patterns' library using rotated versions of patterns
+	*/
+		loadPattern(filename1, patternLibrary, patternCount);
+	#if (NUM_OF_PATTERNS==2)
+		loadPattern(filename2, patternLibrary, patternCount);
+	#endif
+	#if (NUM_OF_PATTERNS==3)
+		loadPattern(filename2, patternLibrary, patternCount);
+		loadPattern(filename3, patternLibrary, patternCount);
+	#endif
+
+	cout << patternCount << " patterns are loaded." << endl;
+	capture = cvCaptureFromCAM(1);
+
+	// GLUT
 
 	glutInit(&argc, argv);
 	glutInitWindowSize(windowWidth, windowHeight);
@@ -311,6 +392,37 @@ int main(int argc, char** argv)
 	webcamTexture.loadTexture(1);
 
 	glutMainLoop();
-
+	
 	return 0;
+}
+
+void trackLoop(void) {
+	//mycapture >> imgMat; 
+	IplImage* img = cvQueryFrame(capture);
+	Mat imgMat = Mat(img);
+	//flip(imgMat, imgMat, 1);
+	double tic = (double)cvGetTickCount();
+
+	//run the detector
+	myDetector.detect(imgMat, cameraMatrix, distortions, patternLibrary, detectedPattern);
+
+	double toc = (double)cvGetTickCount();
+	double detectionTime = (toc - tic) / ((double)cvGetTickFrequency() * 1000);
+	//cout << "Detected Patterns: " << detectedPattern.size() << endl;
+	//cout << "Detection time: " << detectionTime << endl;
+
+	//augment the input frame (and print out the properties of pattern if you want)
+	for (unsigned int i = 0; i < detectedPattern.size(); i++)
+	{
+		detectedPattern.at(i).showPattern();
+		detectedPattern.at(i).draw(imgMat, cameraMatrix, distortions);
+		cout << "Orientation: " << detectedPattern.at(i).orientation << endl;
+
+		// Draw OpenGL here
+	}
+
+	imshow("result", imgMat);
+	cvWaitKey(1);
+
+	detectedPattern.clear();
 }

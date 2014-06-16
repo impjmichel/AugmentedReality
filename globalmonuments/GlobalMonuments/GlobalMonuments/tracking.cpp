@@ -1,3 +1,4 @@
+/*
 #include <iostream>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -64,8 +65,8 @@ int main2()
 	std::vector<Pattern> detectedPattern;
 	int patternCount = 0;
 
-	/*create patterns' library using rotated versions of patterns
-	*/
+	//Ceate patterns' library using rotated versions of patterns
+	
 	loadPattern(filename1, patternLibrary, patternCount);
 #if (NUM_OF_PATTERNS==2)
 	loadPattern(filename2, patternLibrary, patternCount);
@@ -116,6 +117,7 @@ int main2()
 		{
 			detectedPattern.at(i).showPattern();
 			detectedPattern.at(i).draw(imgMat, cameraMatrix, distortions);
+			cout << "Orientation: " << detectedPattern.at(i).orientation << endl;			
 
 			// Draw OpenGL here
 		}
@@ -136,3 +138,4 @@ int main2()
 
 	return 0;
 }
+*/
