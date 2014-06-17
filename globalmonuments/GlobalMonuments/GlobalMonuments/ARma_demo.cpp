@@ -388,7 +388,7 @@ int main(int argc, char** argv)
 	glFogf(GL_FOG_END, 60.0f);
 
 	// OpenCV
-	cap.open(1);
+	cap.open(0);
 
 	cap >> dataImage; // do this once so it points to actual data later on
 	webcamTexture = Texture(dataImage.ptr(), 0, dataImage.cols, dataImage.rows);
@@ -403,7 +403,7 @@ void trackLoop(void) {
 	//mycapture >> imgMat; 
 	IplImage* img = cvQueryFrame(capture);
 	Mat imgMat = Mat(img);
-	//flip(imgMat, imgMat, 1);
+	flip(imgMat, imgMat, 1);
 	double tic = (double)cvGetTickCount();
 
 	//run the detector
