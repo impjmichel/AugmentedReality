@@ -50,13 +50,10 @@ ObjModel::ObjModel(std::string fileName)
 	if(fileName == dirName)
 		dirName = "";
 
-
 	std::ifstream pFile(fileName.c_str());
-
 
 	ObjGroup* currentGroup = new ObjGroup();
 	currentGroup->materialIndex = -1;
-
 
 	while(!pFile.eof())
 	{
@@ -143,13 +140,9 @@ ObjModel::ObjModel(std::string fileName)
 	groups.push_back(currentGroup);
 }
 
-
 ObjModel::~ObjModel(void)
 {
 }
-
-
-
 
 void ObjModel::draw()
 {	
@@ -168,7 +161,8 @@ void ObjModel::draw()
 		glBegin(GL_TRIANGLES);
 		for(Face face : (*group).faces)
 		{				
-			for (Vertex vertex : face.vertices) {								
+			for (Vertex vertex : face.vertices) 
+			{								
 				glNormal3f(normals[vertex.normal].x, normals[vertex.normal].y, normals[vertex.normal].z);
 				glTexCoord2f(texcoords[vertex.texcoord].x, texcoords[vertex.texcoord].y*-1);
 				glVertex3f(vertices[vertex.position].x, vertices[vertex.position].y, vertices[vertex.position].z);				
@@ -264,7 +258,6 @@ float& Vec3f::operator [](int index)
 {
 	return v[index];
 }
-
 
 Vec2f::Vec2f(float x, float y)
 {
