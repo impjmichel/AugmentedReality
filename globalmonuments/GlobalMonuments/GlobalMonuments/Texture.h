@@ -5,7 +5,8 @@
 #include <GL/GL.h>
 #include <string>
 
-class Texture {
+class Texture 
+{
 private:
 	GLuint textureId;
 	int width, height;

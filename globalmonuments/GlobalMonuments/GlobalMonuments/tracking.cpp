@@ -17,13 +17,16 @@ char* filename3 = "pattern5.png";//id=3
 
 static int loadPattern(const char*, std::vector<cv::Mat>&, int&);
 
-int loadPattern(const char* filename, std::vector<cv::Mat>& library, int& patternCount){
+int loadPattern(const char* filename, std::vector<cv::Mat>& library, int& patternCount)
+{
 
-	//try {
+	//try 
+	{
 
 	Mat img = imread(filename, 0);
 
-	if (img.cols != img.rows){
+	if (img.cols != img.rows)
+	{
 		return -1;
 		printf("Not a square pattern");
 	}
@@ -40,7 +43,8 @@ int loadPattern(const char* filename, std::vector<cv::Mat>& library, int& patter
 
 	rot_mat = getRotationMatrix2D(center, 90, 1.0);
 
-	for (int i = 1; i < 4; i++){
+	for (int i = 1; i < 4; i++)
+	{
 		Mat dst = Mat(msize, msize, CV_8UC1);
 		rot_mat = getRotationMatrix2D(center, -i * 90, 1.0);
 		warpAffine(src, dst, rot_mat, Size(msize, msize));

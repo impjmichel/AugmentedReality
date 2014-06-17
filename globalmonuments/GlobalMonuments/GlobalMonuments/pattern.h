@@ -5,7 +5,8 @@
 #include <opencv2/calib3d/calib3d.hpp>
 using namespace cv;
 
-namespace ARma {
+namespace ARma 
+{
 
 class Pattern
 {

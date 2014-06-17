@@ -3,9 +3,11 @@
 using namespace cv;
 using namespace std;
 
-namespace ARma {
+namespace ARma 
+{
 
-	Pattern::Pattern(double param1){
+	Pattern::Pattern(double param1)
+	{
 		id =-1;
 		size = param1;
 		orientation = -1;
@@ -116,7 +118,6 @@ namespace ARma {
 
 	void Pattern::draw(Mat& frame, const Mat& camMatrix, const Mat& distMatrix)
 	{
-		
 		CvScalar color = cvScalar(255,255,255);
 		
 		switch (id){
@@ -162,13 +163,10 @@ namespace ARma {
 		//cout << "line point a: " << model2ImagePts.at(2) << endl;
 		//cout << "line point b: " << model2ImagePts.at(3) << endl;
 
-		
-		
 		cv::line(frame, getPoint(model2ImagePts.at(2), model2ImagePts.at(0)), model2ImagePts.at(2), cvScalar(255, 0, 0), 3);
 		cv::line(frame, getPoint(model2ImagePts.at(4), model2ImagePts.at(6)), getPoint(model2ImagePts.at(2), model2ImagePts.at(0)), cvScalar(0, 0, 255), 3);
 		cv::line(frame, getPoint(model2ImagePts.at(2), model2ImagePts.at(0)), model2ImagePts.at(1), cvScalar(0, 255, 0), 3);
 
 		model2ImagePts.clear();
-
 	}
 }

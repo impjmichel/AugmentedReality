@@ -27,7 +27,6 @@ namespace ARma
 	submat = patMaskInt(cv::Range(normSize/4,3*normSize/4), cv::Range(normSize/4, 3*normSize/4));
 	submat = Scalar(1);
 
-
 	//corner of normalized area
 	norm2DPts[0] = Point2f(0,0);
 	norm2DPts[1] = Point2f(normSize-1,0);
@@ -41,7 +40,6 @@ namespace ARma
 
 void PatternDetector::detect(const Mat& frame, const Mat& cameraMatrix, const Mat& distortions, vector<Mat>& library, vector<Pattern>& foundPatterns)
 {
-
 	patInfo out;
 	Point2f roi2DPts[4];
 	Mat binImage2;
@@ -64,36 +62,35 @@ void PatternDetector::detect(const Mat& frame, const Mat& cameraMatrix, const Ma
 	Point p;
 	int pMinX, pMinY, pMaxY, pMaxX;
 
-	for(i=0; i<contours.size(); i++){
+	for(i=0; i<contours.size(); i++)
+	{
 		Mat contourMat = Mat (contours[i]);
 		const double per = arcLength( contourMat, true);
 		//check the perimeter
-		if (per>(avsize/4) && per<(4*avsize)) {
+		if (per>(avsize/4) && per<(4*avsize)) 
+		{
 			polycont.clear();
 			approxPolyDP( contourMat, polycont, per*0.02, true);
 
 			//check rectangularity and convexity
-			if (polycont.size()==4 && isContourConvex(Mat (polycont))){
-
+			if (polycont.size()==4 && isContourConvex(Mat (polycont)))
+			{
 				//locate the 2D box of contour,
 				p = polycont.at(0);
 				pMinX = pMaxX = p.x;
 				pMinY = pMaxY = p.y;
 				int j;
-				for(j=1; j<4; j++){
+				for(j=1; j<4; j++)
+				{
 					p = polycont.at(j);
-					if (p.x<pMinX){
+					if (p.x<pMinX)
 						pMinX = p.x;
-						}
-					if (p.x>pMaxX){
+					if (p.x>pMaxX)
 						pMaxX = p.x;
-						}
-					if (p.y<pMinY){
+					if (p.y<pMinY)
 						pMinY = p.y;
-						}
-					if (p.y>pMaxY){
+					if (p.y>pMaxY)
 						pMaxY = p.y;
-						}
 				}
 				Rect box(pMinX, pMinY, pMaxX-pMinX+1, pMaxY-pMinY+1);
 				
@@ -101,28 +98,28 @@ void PatternDetector::detect(const Mat& frame, const Mat& cameraMatrix, const Ma
 				double d;
 				double dmin=(4*avsize*avsize);
 				int v1=-1;
-				for (j=0; j<4; j++){
+				for (j=0; j<4; j++)
+				{
 					d = norm(polycont.at(j));
-					if (d<dmin) {
-					dmin=d;
-					v1=j;
+					if (d<dmin) 
+					{
+						dmin=d;
+						v1=j;
 					}
 				}
 
 				//store vertices in refinedVertices and enable sub-pixel refinement if you want
 				vector<Point2f> refinedVertices;
 				refinedVertices.clear();
-				for(j=0; j<4; j++){
+				for(j=0; j<4; j++)
 					refinedVertices.push_back(polycont.at(j));
-				}
 
 				//refine corners
 				cornerSubPix(grayImage, refinedVertices, Size(3,3), Size(-1,-1), TermCriteria(1, 3, 1));
 				
 				//rotate vertices based on upper left vertex; this gives you the most trivial homogrpahy 
-				for(j=0; j<4;j++){
+				for(j=0; j<4;j++)
 					roi2DPts[j] = Point2f(refinedVertices.at((4+v1-j)%4).x - pMinX, refinedVertices.at((4+v1-j)%4).y - pMinY);
-				}
 
 				//normalize the ROI (find homography and warp the ROI)
 				normalizePattern(grayImage, roi2DPts, box, normROI);
@@ -135,16 +132,16 @@ void PatternDetector::detect(const Mat& frame, const Mat& cameraMatrix, const Ma
 				const int retvalue = identifyPattern(normROI, library, out);
 
 				//push-back pattern in the stack of foundPatterns and find its extrinsics
-				if (retvalue>0) {
+				if (retvalue>0) 
+				{
 					Pattern patCand;
 					patCand.id = out.index;
 					patCand.orientation = out.ori;
 					patCand.confidence = out.maxCor;
 					// cout << "Id: " << patCand.id << endl;
 
-					for (j=0; j<4; j++){
+					for (j=0; j<4; j++)
 						patCand.vertices.push_back(refinedVertices.at((8-out.ori+v1-j)%4));
-					}
 
 					//find the transformation (from camera CS to pattern CS)
 					patCand.getExtrinsics(patCand.size, cameraMatrix, distortions);
@@ -158,23 +155,18 @@ void PatternDetector::detect(const Mat& frame, const Mat& cameraMatrix, const Ma
 
 void PatternDetector::convertAndBinarize(const Mat& src, Mat& dst1, Mat& dst2, int thresh_mode)
 {
-
 	//dst1: binary image
 	//dst2: grayscale image
 
-	if (src.channels()==3){
+	if (src.channels()==3)
 		cvtColor(src, dst2, CV_BGR2GRAY);
-	}
-	else {
+	else 
 		src.copyTo(dst2);
-	}
 	
-	if (thresh_mode == 1){
+	if (thresh_mode == 1)
 		threshold(dst2, dst1, thresh1, 255, CV_THRESH_BINARY_INV);
-	}
-	else {
+	else 
 		adaptiveThreshold( dst2, dst1, 255, CV_ADAPTIVE_THRESH_GAUSSIAN_C, CV_THRESH_BINARY_INV, block_size, thresh2);
-	}
 
 	dilate( dst1, dst1, Mat());
 }
@@ -182,8 +174,6 @@ void PatternDetector::convertAndBinarize(const Mat& src, Mat& dst1, Mat& dst2, i
 
 void PatternDetector::normalizePattern(const Mat& src, const Point2f roiPoints[], Rect& rec, Mat& dst)
 {
-	
-
 	//compute the homography
 	Mat Homo(3,3,CV_32F);
 	Homo = getPerspectiveTransform( roiPoints, norm2DPts);
@@ -191,15 +181,12 @@ void PatternDetector::normalizePattern(const Mat& src, const Point2f roiPoints[]
 
 	//warp the input based on the homography model to get the normalized ROI
 	cv::warpPerspective( subImg, dst, Homo, Size(dst.cols, dst.rows));
-
 }
 
 int PatternDetector::identifyPattern(const Mat& src, std::vector<cv::Mat>& loadedPatterns, patInfo& info)
 {
-	if (loadedPatterns.size()<1){
-		printf("No loaded pattern");
+	if (loadedPatterns.size()<1) // no pattern loaded
 		return -1;
-	}
 
 	unsigned int j;
 	int i;
@@ -226,13 +213,14 @@ int PatternDetector::identifyPattern(const Mat& src, std::vector<cv::Mat>& loade
 	
 	//use correlation coefficient as a robust similarity measure
 	info.maxCor = -1.0;
-	for (j=0; j<(loadedPatterns.size()/4); j++){
-		for(i=0; i<4; i++){
-			
+	for (j=0; j<(loadedPatterns.size()/4); j++)
+	{
+		for(i=0; i<4; i++)
+		{
 			double const nnn = pow(norm(loadedPatterns.at(j*4+i)),2);
 
-			if (zero_mean_mode ==1){
-
+			if (zero_mean_mode ==1)
+			{
 				double const mmm = mean(loadedPatterns.at(j*4+i)).val[0];
 			
 				nom = inter.dot(loadedPatterns.at(j*4+i)) - (N*mean_int.val[0]*mmm);
@@ -240,11 +228,10 @@ int PatternDetector::identifyPattern(const Mat& src, std::vector<cv::Mat>& loade
 				tempsim = nom/den;
 			}
 			else 
-			{
-			tempsim = inter.dot(loadedPatterns.at(j*4+i))/(sqrt(normSrcSq*nnn));
-			}
+				tempsim = inter.dot(loadedPatterns.at(j*4+i))/(sqrt(normSrcSq*nnn));
 
-			if(tempsim>info.maxCor){
+			if(tempsim>info.maxCor)
+			{
 				info.maxCor = tempsim;
 				info.index = j+1;
 				info.ori = i;
