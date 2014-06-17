@@ -27,6 +27,8 @@ int currentModel = 0;
 float rotationX, rotationY, rotationZ = 0;
 vector<pair<int, ObjModel*> > models;
 
+int orientation;
+
 cv::VideoCapture cap;
 cv::Mat dataImage;
 
@@ -36,8 +38,8 @@ cv::Mat dataImage;
 #define NUM_OF_PATTERNS 3// define the number of patterns you want to use
 
 char* filename1 = "pattern1.png";//id=1
-char* filename2 = "pattern4.png";//id=2
-char* filename3 = "pattern5.png";//id=3
+char* filename2 = "gmMarker.png";//id=2
+char* filename3 = "pattern4.png";//id=3
 
 CvCapture* capture;
 vector<cv::Mat> patternLibrary;
@@ -194,6 +196,7 @@ void Display(void)
 	glTranslatef(moveX, moveY, moveZ);
 
 	glTranslatef(0, 0, 0); // move back to origin so planet rotates in the origin
+	rotationZ = orientation;
 	glRotatef(rotationX, 1, 0, 0); // Rotations dont rotate around their axis (except last one)
 	glRotatef(rotationY, 0, 1, 0);
 	glRotatef(rotationZ, 0, 0, 1);
@@ -416,8 +419,8 @@ void trackLoop(void) {
 	{
 		detectedPattern.at(i).showPattern();
 		detectedPattern.at(i).draw(imgMat, cameraMatrix, distortions);
+		orientation = detectedPattern.at(i).orientation;
 		cout << "Orientation: " << detectedPattern.at(i).orientation << endl;
-
 		// Draw OpenGL here
 	}
 
