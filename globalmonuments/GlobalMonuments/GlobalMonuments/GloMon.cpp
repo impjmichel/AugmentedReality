@@ -39,20 +39,20 @@ vector<cv::Mat> patternLibrary;
 vector<Pattern> detectedPattern;
 int patternCount = 0;
 
-int norm_pattern_size = PAT_SIZE;
-double fixed_thresh = 40;
-double adapt_thresh = 5;//non-used with FIXED_THRESHOLD mode
-int adapt_block_size = 45;//non-used with FIXED_THRESHOLD mode
+int normPatternSize = PAT_SIZE;
+double fixedThresh = 40;
+double adaptThresh = 5;//non-used with FIXED_THRESHOLD mode
+int adaptBlockSize = 45;//non-used with FIXED_THRESHOLD mode
 double confidenceThreshold = 0.35;
 int mode = 2;//1:FIXED_THRESHOLD, 2: ADAPTIVE_THRESHOLD
 
-PatternDetector myDetector(fixed_thresh, adapt_thresh, adapt_block_size, confidenceThreshold, norm_pattern_size, mode);
+PatternDetector myDetector(fixedThresh, adaptThresh, adaptBlockSize, confidenceThreshold, normPatternSize, mode);
 
 static int loadPattern(const char*, std::vector<cv::Mat>&, int&);
 void drawAxis(void);
 void trackLoop(void);
 
-void InitGraphics(void)
+void initGraphics(void)
 {
 	// Lighting
 	//glEnable(GL_DEPTH_TEST);
@@ -148,7 +148,8 @@ void drawTexCube(void)
 	glPopMatrix();
 }
 
-void drawWebcamPlane(void) {
+void drawWebcamPlane(void) 
+{
 	glPushMatrix();
 
 	glEnable(GL_TEXTURE_2D);
@@ -165,7 +166,7 @@ void drawWebcamPlane(void) {
 	glPopMatrix();
 }
 
-void Display(void)
+void display(void)
 {
 	glEnable(GL_DEPTH_TEST); // prevents texture overlay
 	//glMatrixMode(GL_PROJECTION);
@@ -193,18 +194,16 @@ void Display(void)
 	glRotatef(rotationX, 1, 0, 0); // Rotations dont rotate around their axis (except last one)
 	glRotatef(rotationY, 0, 1, 0);
 	glRotatef(rotationZ, 0, 0, 1);
-
 	
 	if (models.size() > 0)
 		models[currentModel].second->draw();
 
-	
 	//drawTexCube();
 	drawAxis();
 	glutSwapBuffers();
 }
 
-void Reshape(GLint width, GLint height)
+void reshape(GLint width, GLint height)
 {
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
@@ -213,16 +212,7 @@ void Reshape(GLint width, GLint height)
 	glMatrixMode(GL_MODELVIEW);
 }
 
-
-void MouseButton(int button, int state, int x, int y)
-{
-}
-
-void MouseMotion(int x, int y)
-{
-}
-
-void IdleFunc(void)
+void idleFunc(void)
 {
 	angle += 0.1;	
 	glutPostRedisplay();		
@@ -239,7 +229,7 @@ void IdleFunc(void)
 	trackLoop();
 }
 
-void Keyboard(unsigned char key, int x, int y)
+void keyboard(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
@@ -304,11 +294,12 @@ void Keyboard(unsigned char key, int x, int y)
 }
 
 // PATTERN DETECTION
-int loadPattern(const char* filename, std::vector<cv::Mat>& library, int& patternCount){
-
+int loadPattern(const char* filename, std::vector<cv::Mat>& library, int& patternCount)
+{
 	Mat img = imread(filename, 0);
 
-	if (img.cols != img.rows){
+	if (img.cols != img.rows)
+	{
 		return -1;
 		printf("Not a square pattern");
 	}
@@ -325,16 +316,15 @@ int loadPattern(const char* filename, std::vector<cv::Mat>& library, int& patter
 
 	rot_mat = getRotationMatrix2D(center, 90, 1.0);
 
-	for (int i = 1; i < 4; i++){
+	for (int i = 1; i < 4; i++)
+	{
 		Mat dst = Mat(msize, msize, CV_8UC1);
 		rot_mat = getRotationMatrix2D(center, -i * 90, 1.0);
 		warpAffine(src, dst, rot_mat, Size(msize, msize));
 		Mat subImg = dst(Range(msize / 4, 3 * msize / 4), Range(msize / 4, 3 * msize / 4));
 		library.push_back(subImg);
 	}
-
 	patternCount++;
-
 	return 1;
 }
 
@@ -356,20 +346,17 @@ int main(int argc, char** argv)
 	capture = cvCaptureFromCAM(1);
 
 	// GLUT
-
 	glutInit(&argc, argv);
 	glutInitWindowSize(windowWidth, windowHeight);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("GLUT example");
 	// Initialize OpenGL graphics state
-	InitGraphics();
+	initGraphics();
 	// Register callbacks:
-	glutDisplayFunc(Display);
-	glutReshapeFunc(Reshape);
-	glutKeyboardFunc(Keyboard);
-	glutMouseFunc(MouseButton);
-	glutMotionFunc(MouseMotion);
-	glutIdleFunc(IdleFunc);
+	glutDisplayFunc(display);
+	glutReshapeFunc(reshape);
+	glutKeyboardFunc(keyboard);
+	glutIdleFunc(idleFunc);
 	// Turn the flow of control over to GLUT
 
 	// Mist
@@ -388,12 +375,12 @@ int main(int argc, char** argv)
 	webcamTexture = Texture(dataImage.ptr(), 0, dataImage.cols, dataImage.rows);
 	webcamTexture.loadTexture(1);
 
-	glutMainLoop();
-	
+	glutMainLoop();	
 	return 0;
 }
 
-void trackLoop(void) {
+void trackLoop(void) 
+{
 	//mycapture >> imgMat; 
 	IplImage* img = cvQueryFrame(capture);
 	Mat imgMat = Mat(img);
