@@ -21,6 +21,9 @@ namespace ARma
 	//Masks for exterior(black) and interior area inside the pattern
 	patMask = Mat::ones(normSize,normSize,CV_8UC1);
 	Mat submat = patMask(cv::Range(normSize/4,3*normSize/4), cv::Range(normSize/4, 3*normSize/4));
+
+	imshow("test", submat);
+
 	submat = Scalar(0);
 	
 	patMaskInt = Mat::zeros(normSize,normSize,CV_8UC1);
