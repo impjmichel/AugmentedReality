@@ -33,16 +33,10 @@ namespace ARma
 	norm2DPts[1] = Point2f(normSize-1,0);
 	norm2DPts[2] = Point2f(normSize-1,normSize-1);
 	norm2DPts[3] = Point2f(0,normSize-1);
-
-
-
-
 	
 //	imshow("test",patMask);
 //	cvWaitKey(0);
 //	exit(0);
-
-
 }
 
 void PatternDetector::detect(const Mat& frame, const Mat& cameraMatrix, const Mat& distortions, vector<Mat>& library, vector<Pattern>& foundPatterns)
@@ -212,8 +206,7 @@ int PatternDetector::identifyPattern(const Mat& src, std::vector<cv::Mat>& loade
 	double tempsim;
 	double N = (double)(normSize*normSize/4);
 	double nom, den;
-
-	
+		
 	Scalar mean_ext, std_ext, mean_int, std_int;
 
 	meanStdDev(src, mean_ext, std_ext, patMask);
@@ -225,10 +218,8 @@ int PatternDetector::identifyPattern(const Mat& src, std::vector<cv::Mat>& loade
 //	cout << "Mean of ext: " << mean_ext.val[0] << "Mean of int: " << mean_int.val[0] << endl;
 //	cout << "Std of ext: " << std_ext.val[0] << "Std of int: " << std_int.val[0] << endl;
 
-
 	Mat inter = src(cv::Range(normSize/4,3*normSize/4), cv::Range(normSize/4,3*normSize/4));
 	double normSrcSq = pow(norm(inter),2);
-
 
 	//zero_mean_mode;
 	int zero_mean_mode = 1;
@@ -268,7 +259,5 @@ int PatternDetector::identifyPattern(const Mat& src, std::vector<cv::Mat>& loade
 		return 1;
 	else
 		return 0;
-
 }
-
 };
