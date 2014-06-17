@@ -1,15 +1,8 @@
-#include <GL/freeglut.h>
-#include <GL/GL.h>
-#include <iostream>
 #include "Texture.h"
 #include "ObjModel.h"
+#include "CameraParams.h"
+#include "PatternDetector.h"
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include "cameraparams.h"
-#include "patterndetector.h"
-
-using namespace std;
 using namespace ARma;
 
 float angle, eyeAngle = 0;
@@ -388,8 +381,9 @@ int main(int argc, char** argv)
 	glFogf(GL_FOG_END, 60.0f);
 
 	// OpenCV
-	cap.open(0);
 
+	cap.open(1);
+	
 	cap >> dataImage; // do this once so it points to actual data later on
 	webcamTexture = Texture(dataImage.ptr(), 0, dataImage.cols, dataImage.rows);
 	webcamTexture.loadTexture(1);

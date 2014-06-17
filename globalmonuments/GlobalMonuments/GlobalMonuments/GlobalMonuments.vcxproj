@@ -10,6 +10,23 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CameraParams.h" />
+    <ClInclude Include="ObjModel.h" />
+    <ClInclude Include="Pattern.h" />
+    <ClInclude Include="PatternDetector.h" />
+    <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="TargetVer.h" />
+    <ClInclude Include="Texture.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GloMon.cpp" />
+    <ClCompile Include="ObjModel.cpp" />
+    <ClCompile Include="Pattern.cpp" />
+    <ClCompile Include="PatternDetector.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Tracking.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D601C84C-F2E0-4F81-BC1D-E66D2ECD88F7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -82,24 +99,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="ARma_demo.cpp" />
-    <ClCompile Include="ObjModel.cpp" />
-    <ClCompile Include="pattern.cpp" />
-    <ClCompile Include="patterndetector.cpp" />
-    <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="tracking.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="cameraparams.h" />
-    <ClInclude Include="ObjModel.h" />
-    <ClInclude Include="pattern.h" />
-    <ClInclude Include="patterndetector.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-    <ClInclude Include="Texture.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

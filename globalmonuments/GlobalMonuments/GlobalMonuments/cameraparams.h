@@ -1,16 +1,12 @@
-#ifndef _CAMERAPARAMS_H
-#define _CAMERAPARAMS_H
-#include <opencv2/core/core.hpp>
-using namespace cv;
+#pragma once
 
-	CvMat* intrinsic = (CvMat*)cvLoad("intrinsic.xml");	
-	CvMat* distor = (CvMat*)cvLoad("distortion.xml");
+#include "Stdafx.h"
 
-	Mat cameraMatrix = cvarrToMat(intrinsic);
-	Mat distortions = cvarrToMat(distor);
+CvMat* intrinsic = (CvMat*)cvLoad("intrinsic.xml");	
+CvMat* distor = (CvMat*)cvLoad("distortion.xml");
 
+Mat cameraMatrix = cvarrToMat(intrinsic);
+Mat distortions = cvarrToMat(distor);
 
-
-#endif.
 
 

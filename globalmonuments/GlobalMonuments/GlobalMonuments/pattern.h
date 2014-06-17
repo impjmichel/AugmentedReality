@@ -35,7 +35,10 @@ class Pattern
 
 		void drawAxis(void);
 			
+		Point getCenter(void);
+		Point getAncorPoint(void);
 };
+
 
 
 }
